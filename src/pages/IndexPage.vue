@@ -22,8 +22,12 @@
       </q-card-section>
     </q-card>
 
-    <q-list class="flex flex-col gap-2 w-[100vw]">
-      <q-item class="bg-secondary" v-for="(repo, idx) in lstRepos" :key="idx">
+    <q-list class="flex flex-col gap-2 w-full">
+      <q-item
+        class="bg-secondary rounded-xl"
+        v-for="(repo, idx) in lstRepos"
+        :key="idx"
+      >
         <q-item-section class="flex flex-col gap-2">
           <q-item-label class="text-h6">
             {{ repo.name }}
@@ -31,8 +35,40 @@
           <q-item-label caption>
             {{ repo.description }}
           </q-item-label>
-          <q-table :rows="repo.commits" v-if="repo.commits" />
+
+          <q-table
+            v-if="repo.commits"
+            :rows="repo.commits"
+            :columns="commitColumns"
+            row-key="sha"
+            flat
+            dense
+            class="q-mt-sm"
+            :pagination="{ rowsPerPage: 5 }"
+            wrap-cells
+          >
+            <template #body-cell-message="props">
+              <q-td :props="props">
+                {{ props.row.commit.message }}
+              </q-td>
+            </template>
+
+            <template #body-cell-author="props">
+              <q-td :props="props">
+                {{ props.row.commit.author.name }}
+              </q-td>
+            </template>
+
+            <template #body-cell-date="props">
+              <q-td :props="props">
+                {{
+                  new Date(props.row.commit.author.date).toLocaleDateString()
+                }}
+              </q-td>
+            </template>
+          </q-table>
         </q-item-section>
+
         <q-item-section side>
           <q-btn
             label="ver commits"
@@ -50,6 +86,30 @@
 import { useQuasar } from "quasar";
 import { getUserRepo, getRepoCommits } from "src/services/GithubService";
 import { ref } from "vue";
+
+const commitColumns = [
+  {
+    name: "message",
+    label: "Mensagem",
+    field: (row) => row.commit.message,
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "author",
+    label: "Autor",
+    field: (row) => row.commit.author.name,
+    align: "left",
+    sortable: true,
+  },
+  {
+    name: "date",
+    label: "Data",
+    field: (row) => row.commit.author.date,
+    align: "left",
+    sortable: true,
+  },
+];
 
 const $q = useQuasar();
 

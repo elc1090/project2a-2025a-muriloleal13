@@ -4,7 +4,7 @@
 
 #### Deploy
 
-Preencha aqui a URL para acesso ao site publicado
+[Preencha aqui a URL para acesso ao site publicado](https://github-api-murilo.netlify.app)
 
 #### Desenvolvedor(a)
 
